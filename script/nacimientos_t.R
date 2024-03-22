@@ -8,20 +8,42 @@ edades <- ggplot(df, aes(x=EDAD_MADN, y= EDAD_PADN, color=ESCOL_MAD)) + geom_poi
 edades
 
 # Lista de archivos
-myfiles <- list.files(path="C:/Users/oskka/OneDrive/Documentos/José/INEGI/Nacimientos/", pattern="*.dbf")
+myfiles <- list.files(path="C:/Users/oskka/OneDrive/Documentos/José/INEGI/Nacimientos/")
+
 #Función para asignar el año de nacimiento
-nacimiento <- lapply(myfiles, function(x){
-  for (i in 1:length(myfiles)){
-    foreign::read.dbf(paste0("C:/Users/oskka/OneDrive/Documentos/José/INEGI/Nacimientos/", i))  
+nacimiento <- function(x){
+  for (i in 1985:1986){
+    df <- foreign::read.dbf(paste0("C:/Users/oskka/OneDrive/Documentos/José/INEGI/Nacimientos/NACIM", i, ".dbf"))
+    df$ANO_NAC <- ifelse(df$ANO_NAC<99, df$ANO_NAC + 1900, df$ANO_NAC)
+    df$ANO_REG <- ifelse(df$ANO_REG<99, df$ANO_REG + 1900, df$ANO_REG)
+
+    if (i == 1985){
+      
+      tabla <- df %>% 
+        filter(ANO_NAC== i) %>% 
+        group_by(SEXO, EDAD_MADN) %>% 
+        summarise(n())
+      
+    }else{
+      
+      tabla_i <- df %>% 
+        filter(ANO_NAC == i) %>% 
+        group_by(SEXO, EDAD_MADN) %>% 
+        summarise(n())
+      tabla <- merge(tabla, tabla_i, by=c( "SEXO", "EDAD_MADN"))
+    }
+    
+    
   }
-  
-})
+  return(tabla)
+}
 
-
-tabla_año <- df %>% 
+nac <- nacimiento()
+tabla_2022 <- df %>% 
+  filter(ANO_NAC>=1985) %>% 
   group_by(ANO_NAC, SEXO, EDAD_MADN) %>% 
   summarise(n())
-
+tabla_2022
 
 tabla <- merge(tabla, tabla_año, by = c("SEXO", "EDAD_MADN"))
 names(tabla) <- c("SEXO", "EDAD_MADN", "1985", "1986", "1987", "1988", "1989", "1990", "1991", "1992", "1993", 
@@ -31,3 +53,4 @@ names(tabla) <- c("SEXO", "EDAD_MADN", "1985", "1986", "1987", "1988", "1989", "
 head(tabla)
 
 write.csv(tabla, "bin/nacimientos_edad_año.csv")
+
