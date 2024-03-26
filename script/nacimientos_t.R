@@ -59,9 +59,9 @@ nacimiento <- function(x){
   return(tabla)
 }
 
-nac <- nacimiento()
+#nac <- nacimiento()
 
-write.csv(nac, "bin/nacim_x_edad_en_año_reg.csv")
+#write.csv(nac, "bin/nacim_x_edad_en_año_reg.csv")
 
 
 ##################################################################################
@@ -100,7 +100,7 @@ registro_tardio <- function(){
   return(tabla)
 } # Fin de función
 
-ver <- registro_tardio()
+#ver <- registro_tardio()
 
 ##########################################################
 #### TOTAL DE REGISTROS TARDIOS POR AÑO DE NACIMIENTO ####
@@ -117,14 +117,14 @@ tot_reg <- function(){
       tabla_i <- cbind(estructura, registros)
     }else{
       tabla_i <- merge(tabla_i, tabla_1, by = c("SEXO", "EDAD_MADN"), all=T)
-    }
+    } #Fin If / else
     
     
-  }
+  } #Fin For loop y
   names(tabla_i) <- c("SEXO", "EDAD_MADN", as.character(1985:2012))
 
   return(tabla_i)
 }
 
-prueba <- tot_reg()
-write.csv(prueba, "bin/Registros tardíos/Total_Registros_Tardíos_x_Ano_Nacim.csv")
+# prueba <- tot_reg()
+#write.csv(prueba, "bin/Registros tardíos/Total_Registros_Tardíos_x_Ano_Nacim.csv")
