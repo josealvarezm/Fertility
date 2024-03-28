@@ -1,4 +1,5 @@
-setwd("C:/Users/oskka/OneDrive/Documentos/GitHub/Fertility")
+#setwd("C:/Users/oskka/OneDrive/Documentos/GitHub/Fertility")
+#setwd("C:/Users/JoseC/OneDrive/Documents/GitHub/Fertility")
 
 library(dplyr)
 
@@ -6,12 +7,12 @@ library(dplyr)
 ##########################################################
 #### Función 1: NACIMIENTOS REGISTRADOS OPORTUNAMENTE ####
 ##########################################################
-
-nacimiento <- function(x){
+  # Incorporar la dirección de los archivos como parámetro
+nacimiento <- function(localiza){
   
   # Loop for i -> Genera tabla con nacimientos ocurridos en cada año y registrados en el mismo año
   for (i in 1985:2022){
-    df <- foreign::read.dbf(paste0("C:/Users/oskka/OneDrive/Documentos/José/INEGI/Nacimientos/NACIM", i, ".dbf"))
+    df <- foreign::read.dbf(paste0(localiza,"NACIM", i, ".dbf"))
     df$ANO_NAC <- ifelse(df$ANO_NAC<99, df$ANO_NAC + 1900, df$ANO_NAC)
     df$ANO_REG <- ifelse(df$ANO_REG<99, df$ANO_REG + 1900, df$ANO_REG)
 
@@ -69,7 +70,7 @@ nacimiento <- function(x){
 ##################################################################################
 
 registro_tardio <- function(){
-  year <- c(1985:1985)
+  year <- c(1985:2012)
   for (y in year){
     nombre <- paste0("X", (y))
     
@@ -88,7 +89,7 @@ registro_tardio <- function(){
         # Registro de los años subsiguientes
         tabla_i <- df %>% select(SEXO, EDAD_MADN, nombre)
         names(tabla_i) <- c("SEXO", "EDAD_MADN", as.character(i + y))
-        tabla <- merge(tabla, tabla_i, by = c("SEXO", "EDAD_MADN"))
+        tabla <- merge(tabla, tabla_i, by = c("SEXO", "EDAD_MADN"), all = T )
       } #Fin If / Else
       
       
